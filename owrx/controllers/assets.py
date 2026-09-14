@@ -3,7 +3,7 @@ from owrx.config.core import CoreConfig
 from datetime import datetime, timezone
 import mimetypes
 import os
-import pkg_resources
+import importlib.resources
 from abc import ABCMeta, abstractmethod
 import gzip
 
@@ -100,7 +100,7 @@ class OwrxAssetsController(AssetsController):
                 user_file = "{}/{}.{}".format(config.get_data_directory(), mappedFiles[file], ext)
                 if os.path.exists(user_file) and os.path.isfile(user_file):
                     return user_file
-        return pkg_resources.resource_filename("htdocs", file)
+        return importlib.resources.files("htdocs").joinpath(file)
 
 
 class AprsSymbolsController(AssetsController):
@@ -142,6 +142,7 @@ class CompiledAssetsController(GzipMixin, ModificationAwareController):
             "lib/Bandplan.js",
             "lib/Spectrum.js",
             "lib/Scanner.js",
+            "lib/Plugins.js",
             "lib/Lookup.js",
             "lib/Utils.js",
             "lib/Clock.js",
@@ -156,6 +157,7 @@ class CompiledAssetsController(GzipMixin, ModificationAwareController):
             "lib/MapLocators.js",
             "lib/MapMarkers.js",
             "lib/MapManager.js",
+            "lib/Plugins.js",
             "lib/Lookup.js",
             "lib/Utils.js",
             "lib/Clock.js",
@@ -169,6 +171,7 @@ class CompiledAssetsController(GzipMixin, ModificationAwareController):
             "lib/MapLocators.js",
             "lib/MapMarkers.js",
             "lib/MapManager.js",
+            "lib/Plugins.js",
             "lib/Lookup.js",
             "lib/Utils.js",
             "lib/Clock.js",
@@ -203,7 +206,7 @@ class CompiledAssetsController(GzipMixin, ModificationAwareController):
             return
 
         files = CompiledAssetsController.profiles[profileName]
-        files = [pkg_resources.resource_filename("htdocs", f) for f in files]
+        files = [importlib.resources.files("htdocs").joinpath(f) for f in files]
 
         modified = self.getModified(files)
 
